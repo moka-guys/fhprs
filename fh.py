@@ -5,15 +5,39 @@ import csv
 import vcf
 from collections import defaultdict
 
-#SNPscores for each genotype from Talmud et al. 2013 (DOI:10.1016/S0140-6736(12)62127-8)
 
-
-'''flatMap'''
+'''generic flatMap function'''
 flat_map = lambda f, xs: [y for ys in xs for y in f(ys)]
 
 
 class PRS(object):
-  #scores and decile ranges from Talmud et al., 2013
+  """
+  Class to easily calculate Polygenic Risk Score for FH.
+  see Talmund et al 2013
+
+  Attributes
+  ----------
+  SCORES : nested hashtable [location][genotype]
+      Static risk scores for 12 SNPs from Talmud et al. 2013 (DOI:10.1016/S0140-6736(12)62127-8)
+  RISKRANGES : tuple of tuples
+      decile ranges for risk score and the associated risk level (according to Bristol)
+  vcf_file : str
+      VCF file path (uncompressed)
+  locations : [str]
+      SNP locations as extracted from the SCORES structure
+  sample_index : int
+      Index of sample for which score is calculated
+
+  Methods
+  -------
+  _readGenotypes()
+      Prints the animals name and what sound it makes
+  scoreGenotypes()
+      Calculates PRS and returns min and max value (which are identical if all SNPs have been genotyped)
+  risk()
+      Returns decile number for risk score and the associated risk term
+  
+  """
   SCORES = {
     "1:55504650": { #rs2479409 (PCSK9)
       "GG":0.104,
@@ -91,12 +115,23 @@ class PRS(object):
   )
 
   def __init__(self, vcf_file, sample_index=0):
+    """
+    Creates class instance by extracting the Genotypes required for risk score calculation
+    ----------
+    vcf_file : str
+        VCF file path (uncompressed)
+    sample_index : str
+        Index of sample for which score is calculated (defaults to first sample in VCF)
+    """
     self.vcf_file = vcf_file
     self.locations = flat_map(lambda x: x.split(','), self.SCORES.keys()) 
     self.sample_index = sample_index
     self._readGenotypes()
 
   def _readGenotypes(self):
+    """
+    Extracts genotypes from VCF at position specified in SCORES hash table
+    """
     self.genotypes = defaultdict(None)
     vcf_reader = vcf.Reader(open(self.vcf_file, 'r'))
     for record in vcf_reader:
@@ -119,6 +154,10 @@ class PRS(object):
         # self.genotypes[location] = gt_bases
 
   def scoreGenotypes(self):
+    """
+    Calculates risk score for extracted genotypes.
+    Will return a range if not all SNPs were genotyped, or two indentical values otherwise
+    """
     score_range = [0,0]
     for l,s in self.SCORES.items():
       locations = l.split(',')
@@ -135,6 +174,9 @@ class PRS(object):
     return score_range
     
   def risk(self):
+    """
+    Returns risk decile and associated term
+    """
     score_range = self.scoreGenotypes()
     risk_strings = []
     for score in score_range:
