@@ -65,7 +65,7 @@ class PRS(object):
       "GT":0.18,
       "TT":0
     },
-    "19:45411941,19:45412079":{
+    "19:45411941,19:45412079":{ #rs429358,rs7412
       "TTTT":-0.9,
       "TCTT":-0.4,
       "TTCT":-0.4,
@@ -94,9 +94,7 @@ class PRS(object):
     self.vcf_file = vcf_file
     self.locations = flat_map(lambda x: x.split(','), self.SCORES.keys()) 
     self.sample_index = sample_index
-    # get genotypes
     self._readGenotypes()
-    self.scoreGenotypes()
 
   def _readGenotypes(self):
     self.genotypes = defaultdict(None)
@@ -116,7 +114,7 @@ class PRS(object):
             self.genotypes[location] = ''.join(gt_bases)
           except:
             pass
-        ## builtin methods dont guarantee gt order
+        ## builtin methods dont guarantee Genotype order REF,ALT
         # genotype = record.samples[self.sample_index].gt_bases.upper()
         # self.genotypes[location] = gt_bases
 
@@ -136,9 +134,6 @@ class PRS(object):
         score_range[1] += max(list(allele_scores.values()))
     return score_range
     
-  def prs(self):
-    score_range = self.scoreGenotypes()
-
   def risk(self):
     score_range = self.scoreGenotypes()
     risk_strings = []
@@ -158,5 +153,6 @@ class PRS(object):
 if __name__ == "__main__":
   vcf_file = sys.argv[1]
   vcf = PRS(vcf_file)
+  print(vcf.genotypes)
   print(vcf.scoreGenotypes())
   print(vcf.risk())
