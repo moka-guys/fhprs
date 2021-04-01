@@ -135,7 +135,7 @@ class PRS(object):
     self.genotypes = defaultdict(None)
     vcf_reader = vcf.Reader(open(self.vcf_file, 'r'))
     for record in vcf_reader:
-      location = ':'.join([record.CHROM,str(record.POS)])
+      location = ':'.join([record.CHROM.replace("chr",""),str(record.POS)])
       if location in self.locations:
         # own GT extract function to ensure correct ordering of ALLELES
         gt_bases = []
