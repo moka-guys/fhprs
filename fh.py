@@ -186,15 +186,15 @@ class PRS(object):
             decile = str(i+1)
             risk = r[2]
             break
-      risk_strings.append('{} ({})'.format(decile,risk))
+      risk_strings.append('{} - {}'.format(risk, decile))
       if score_range[0] == score_range[1]:
         break
-    return " - ".join(risk_strings)
+    return "-".join(risk_strings)
 
 
 if __name__ == "__main__":
   vcf_file = sys.argv[1]
   vcf = PRS(vcf_file)
-  print(vcf.genotypes)
-  print(vcf.scoreGenotypes())
-  print(vcf.risk())
+  #print(vcf.genotypes)
+  print("score (low-high):", str(vcf.scoreGenotypes()[0]) + "-" + str(vcf.scoreGenotypes()[1]))
+  print("risk-decile:",vcf.risk())
