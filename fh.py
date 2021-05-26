@@ -195,6 +195,9 @@ class PRS(object):
 if __name__ == "__main__":
   vcf_file = sys.argv[1]
   vcf = PRS(vcf_file)
-  #print(vcf.genotypes)
+  genotype_list = []
+  for i in vcf.genotypes:
+	  genotype_list.append(i+"-"+vcf.genotypes[i])
+  print("genotypes:",",".join(genotype_list))
   print("score (low-high):", str(vcf.scoreGenotypes()[0]) + "-" + str(vcf.scoreGenotypes()[1]))
   print("risk-decile:",vcf.risk())
