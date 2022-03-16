@@ -3,3 +3,12 @@
 Simple standalone class to calculate FH polygenic risk score accoding to Talmund et al. 2013.
 Code adopted from Bristol and modernised for python3 and pyVCF
 
+## Usage
+`python3 fh.py file.vcf`
+
+## Docker image build
+`make build`
+
+## Test
+This runs against the two files with all or paritally missing positions
+`make test`
