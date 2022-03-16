@@ -179,14 +179,19 @@ class PRS(object):
 		"""
 		score_range = self.scoreGenotypes()
 		risk_strings = []
+		# iterate over the min and max PRS (based on available data)
 		for score in score_range:
+			# define default result
 			decile, risk = 'NA', 'Out of range'
+			# identify risk cateogory and decile
 			for i,r in enumerate(self.RISKRANGES):
 				if r[0] <= score < r[1]:
 					decile = str(i+1)
 					risk = r[2]
 					break
+			# store risk
 			risk_strings.append('{}-{}'.format(risk, decile))
+			# if min and max scores are the same, skip calculating it again
 			if score_range[0] == score_range[1]:
 				break
 		return risk_strings
