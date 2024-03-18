@@ -7,7 +7,7 @@ Code adopted from Bristol and modernised for python3 and pyVCF
 `python3 fh.py file.vcf`
 
 ## Docker image build
-`make build`
+`docker build -t fh_prs .`
 
 ## Test
 This runs against the two files with all or paritally missing positions
