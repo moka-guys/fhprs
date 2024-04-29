@@ -30,3 +30,7 @@ test: build
 	docker run -it --rm -v $(TEST_DIR):/resources $(IMG_VERSIONED) /resources/incomplete.vcf
 	echo "Complete VCF (all variant positions covered):"
 	docker run -it --rm -v $(TEST_DIR):/resources $(IMG_VERSIONED) /resources/complete.vcf
+
+test_sample: build
+	echo "Testing sample 17 from run NGS605:"
+	docker run -it --rm -v $(TEST_DIR):/resources $(IMG_VERSIONED) /resources/NGS605_17_324382_LB_F_VCP1R134StG_Pan4821_S9_markdup_Haplotyper.g.vcf
