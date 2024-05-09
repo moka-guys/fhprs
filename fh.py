@@ -14,6 +14,7 @@ class PRS(object):
 	"""
 	Class to easily calculate Polygenic Risk Score for FH.
 	see Talmund et al 2013
+ 	NOTE: Talmund et al use build 37 genomic coordinates. This script uses build 38 genomic coordinates. 
 
 	Attributes
 	----------
@@ -39,57 +40,57 @@ class PRS(object):
 	
 	"""
 	SCORES = {
-	"1:55038977": { #rs2479409 (PCSK9) build 38
+	"1:55038977": { #rs2479409 (PCSK9)
 		"GG":0.104,
 		"GA":0.052,
 		"AA":0
 	}, 
-	"1:109275684":{ #rs629301 (CELSR2) build 38
+	"1:109275684":{ #rs629301 (CELSR2)
 		"GG":0,
 		"GT":0.15,
 		"TT":0.3
 	}, 
-	"2:21041028":{ #rs1367117 (APOB) build 38
+	"2:21041028":{ #rs1367117 (APOB)
 		"GG":0,
 		"GA":0.1,
 		"AA":0.2
 	}, 
-	"2:43845437":{ #rs4299376 (ABCG8) build 38
+	"2:43845437":{ #rs4299376 (ABCG8)
 		"GG":0.142,
 		"GT":0.071,
 		"TT":0
 	}, 
-	"6:16127176":{ #rs3757354 (MYLIP) build 38
+	"6:16127176":{ #rs3757354 (MYLIP)
 		"CC":0.074,
 		"CT":0.037,
 		"TT":0
 	}, 
-	"6:26092913":{ #rs1800562 (HFE) build 38
+	"6:26092913":{ #rs1800562 (HFE)
 		"GG":0.114,
 		"GA":0.057,
 		"AA":0
 	}, 
-	"6:160157828":{ #rs1564348 (SLC22A1) build 38
+	"6:160157828":{ #rs1564348 (SLC22A1)
 		"TT":0.028,
 		"TC":0.014,
 		"CC":0
 	},
-	"11:126374057":{ #rs11220462 (ST3GAL4) build 38
+	"11:126374057":{ #rs11220462 (ST3GAL4)
 		"GG":0,
 		"GA":0.05,
 		"AA":0.1
 	}, 
-	"14:24414681":{ #rs8017377 (NYNRIN) build 38
+	"14:24414681":{ #rs8017377 (NYNRIN)
 		"GG":0,
 		"GA":0.029,
 		"AA":0.058
 	},
-	"19:11091630":{ #rs6511720 (LDLR) build 38
+	"19:11091630":{ #rs6511720 (LDLR)
 		"GG":0.36,
 		"GT":0.18,
 		"TT":0
 	},
-	"19:44908684,19:44908822":{ #rs429358,rs7412 build 38
+	"19:44908684,19:44908822":{ #rs429358,rs7412
 		"TTTT":-0.9,
 		"TCTT":-0.4,
 		"TTCT":-0.4,
