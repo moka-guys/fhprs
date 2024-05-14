@@ -1,4 +1,4 @@
-# FH-PRS v2.0.0
+# FH-PRS
 
 Simple standalone class to calculate FH polygenic risk score accoding to Talmund et al. 2013.
 Code adopted from Bristol and modernised for python3 and pyVCF. Uses build 38 genomic coordinates. 
