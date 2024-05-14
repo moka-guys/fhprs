@@ -20,7 +20,6 @@ push: build tag
 
 build:
 	docker build -t $(IMG_VERSIONED) .
-	#docker buildx build --platform linux/amd64 -t $(IMG_VERSIONED) .
 
 tag:
 	docker tag $(IMG_VERSIONED) $(IMG_LATEST)
