@@ -10,12 +10,15 @@ Code adopted from Bristol and modernised for python3 and pyVCF. Uses build 38 ge
 `make build`
 
 To build the docker image from scratch, using no cached layers:
+
 `make cleanbuild` 
 
 ## Docker image upload
 To upload the built docker image to DockerHub:
+
 `make push`
 
 ## Test
 This runs against the two files with all or partially missing positions
+
 `make test`
