@@ -2,8 +2,8 @@ BUILD    := $(shell git log -1 --pretty=%h)
 TEST_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))test
 
 # define image names
-APP      := scidb
-REGISTRY := fhprs
+APP      := fhprs
+REGISTRY := seglh
 
 # build tags
 IMG           := $(REGISTRY)/$(APP)
