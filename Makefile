@@ -1,4 +1,4 @@
-BUILD    := $(shell git log -1 --pretty=%h)
+BUILD    := $(shell git describe --tags --always --dirty)
 TEST_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))test
 
 # define image names
