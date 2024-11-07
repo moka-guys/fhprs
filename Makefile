@@ -22,7 +22,7 @@ build: version
 	docker tag $(IMG_VERSIONED) $(IMG_LATEST)
 	docker save $(IMG_VERSIONED) | gzip > $(DIR)/$(REGISTRY)-$(APP):$(BUILD).tar.gz
 
-test: build
+test_vcf: build
 	echo "Incomplete VCF (positions missing):"
 	docker run -it --rm -v $(TEST_DIR):/resources $(IMG_VERSIONED) /resources/incomplete.vcf
 	echo "Complete VCF (all variant positions covered):"

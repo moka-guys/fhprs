@@ -134,7 +134,18 @@ class PRS(object):
 		Extracts genotypes from VCF at position specified in SCORES hash table
 		"""
 		self.genotypes = defaultdict(None)
-		vcf_reader = vcf.Reader(open(self.vcf_file, 'r'))
+
+		# try to open VCF file, specific error messages for specific errors
+		try:
+			vcf_reader = vcf.Reader(open(self.vcf_file, 'r'))
+		except FileNotFoundError:
+			raise FileNotFoundError(f"The specified VCF file '{self.vcf_file}' could not be found.")
+		except PermissionError:
+			raise PermissionError(f"Permission denied when trying to open the VCF file '{self.vcf_file}'.")
+		except Exception as e:
+			raise Exception(f"An unexpected error occured while opening the VCF file: e")
+
+
 		for record in vcf_reader:
 			location = ':'.join([re.sub("^chr","",record.CHROM),str(record.POS)])
 			if location in self.locations:
@@ -160,9 +171,11 @@ class PRS(object):
 		Will return a range if not all SNPs were genotyped, or two indentical values otherwise
 		"""
 		score_range = [0,0]
+		
 		for l,s in self.SCORES.items():
 			locations = l.split(',')
 			genotypes = list(map(lambda x: self.genotypes[x] if x in self.genotypes.keys() else None, locations))
+
 			# lookup
 			allele_scores = self.SCORES[l]
 			try:
@@ -172,6 +185,7 @@ class PRS(object):
 			except:
 				score_range[0] += min(list(allele_scores.values()))
 				score_range[1] += max(list(allele_scores.values()))
+			
 		return score_range
 	
 	def risk(self):
@@ -199,8 +213,23 @@ class PRS(object):
 
 
 if __name__ == "__main__":
+	# stop execution if only 1 argument provided, provide terminal output instructions for use
+	if len(sys.argv) != 2:
+		print("Usage: python fh.py <vcf_file>")
+		sys.exit(1)
+
 	vcf_file = sys.argv[1]
-	vcf = PRS(vcf_file)
+
+	# stop execution if vcf file specified doesn't exist
+	if not os.path.isfile(vcf_file):
+		print(f"Error: VCF file '{vcf_file}' does not exist.")
+		sys.exit(1)
+
+	try:
+		vcf = PRS(vcf_file)
+	except Exception as e:
+		print(f"Error initialising PRS calculation: {e}")
+	
 	genotype_list = []
 	for i in vcf.genotypes:
 		genotype_list.append(i+"-"+vcf.genotypes[i])
