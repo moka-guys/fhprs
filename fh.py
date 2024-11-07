@@ -143,7 +143,7 @@ class PRS(object):
 		except PermissionError:
 			raise PermissionError(f"Permission denied when trying to open the VCF file '{self.vcf_file}'.")
 		except Exception as e:
-			raise Exception(f"An unexpected error occured while opening the VCF file: e")
+			raise Exception(f"An unexpected error occurred while opening the VCF file: {e}")
 
 
 		for record in vcf_reader:
