@@ -133,11 +133,45 @@ class PRS(object):
 		"""
 		Extracts genotypes from VCF at position specified in SCORES hash table
 		"""
+
 		self.genotypes = defaultdict(None)
 
-		# try to open VCF file, specific error messages for specific errors
 		try:
-			vcf_reader = vcf.Reader(open(self.vcf_file, 'r'))
+			# open VCF file within a with block, means will be properly closed after use. 
+			with open(self.vcf_file, 'r') as vcf_file:
+				try:	
+					vcf_reader = vcf.Reader(vcf_file)
+				except:
+					raise ValueError
+				# Iterate over the VCF records while the file is still open
+				for record in vcf_reader:
+					location = ':'.join([re.sub("^chr", "", record.CHROM), str(record.POS)])
+					if location in self.locations:
+						# Extract the genotype information ensuring correct allele order
+						gt_bases = []
+						for num in sorted(record.samples[self.sample_index].gt_alleles):
+							try:
+								gt_bases.append(str(record.alleles[int(num)]).upper())
+								
+								# Checking allele pulled from VCF is a valid base
+								allele = str(record.alleles[int(num)]).upper()
+								accepted_alleles = ['A','T','G','C','',' ']
+								if allele in accepted_alleles:
+									continue
+								else:
+									raise ValueError
+							except Exception as e:
+								break  # Handle potential missing alleles safely
+						if len(gt_bases) == len(record.samples[self.sample_index].gt_alleles):
+							try:
+								self.genotypes[location] = ''.join(gt_bases)
+							except:
+								pass
+				if not self.genotypes: # if no genotype info found in file
+					raise ValueError				
+
+		except ValueError:
+			raise ValueError(f"The data in the VCF file '{self.vcf_file}' is either missing or corrupted. Please check file.")
 		except FileNotFoundError:
 			raise FileNotFoundError(f"The specified VCF file '{self.vcf_file}' could not be found.")
 		except PermissionError:
@@ -145,25 +179,6 @@ class PRS(object):
 		except Exception as e:
 			raise Exception(f"An unexpected error occurred while opening the VCF file: {e}")
 
-
-		for record in vcf_reader:
-			location = ':'.join([re.sub("^chr","",record.CHROM),str(record.POS)])
-			if location in self.locations:
-				# own GT extract function to ensure correct ordering of ALLELES
-				gt_bases = []
-				for num in sorted(record.samples[self.sample_index].gt_alleles):
-					try:
-						gt_bases.append(str(record.alleles[int(num)]).upper())
-					except:
-						break
-				if len(gt_bases)==len(record.samples[self.sample_index].gt_alleles):
-					try:
-						self.genotypes[location] = ''.join(gt_bases)
-					except:
-						pass
-				## builtin methods dont guarantee Genotype order REF,ALT
-				# genotype = record.samples[self.sample_index].gt_bases.upper()
-				# self.genotypes[location] = gt_bases
 
 	def scoreGenotypes(self):
 		"""
@@ -185,7 +200,10 @@ class PRS(object):
 			except:
 				score_range[0] += min(list(allele_scores.values()))
 				score_range[1] += max(list(allele_scores.values()))
-			
+		
+		# rounding the final score to 6 decimal places to avoid odd results produced due to floating-point precision errors
+		# which result in script calculated scores and hand calculated scores erroneously differing
+		score_range = [round(score,5)for score in score_range]
 		return score_range
 	
 	def risk(self):
