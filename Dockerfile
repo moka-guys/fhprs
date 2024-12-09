@@ -11,6 +11,6 @@ ADD ./test/invalid.vcf /code
 ADD requirements.txt /code
 RUN pip3 install -r requirements.txt --retries=10
 RUN chmod +x /code/fh.py
-RUN python -m unittest -v tests_prs.py
+RUN python -m unittest -v tests_fhprs.py
 ENTRYPOINT ["python","/code/fh.py"]
 
